@@ -11,7 +11,7 @@ def json_request(url, headers):
     return response.json()
 
 
-def calculate(api_key, email):
+def calculate(api_key, email, verbose=False):
     auth_header = {'Authorization': 'token {0}'.format(api_key)}
 
     repos = json_request('https://api.github.com/user/repos', auth_header)
@@ -19,7 +19,8 @@ def calculate(api_key, email):
     dates_with_commits = set()
 
     for repo in repos:
-        print('Fetching commits for {0}...'.format(repo['name']))
+        if verbose:
+            print('Fetching commits for {0}...'.format(repo['name']))
 
         commits_url = repo['commits_url'].replace('{/sha}', '') + '?author=' + email
         commits = json_request(commits_url, auth_header)
