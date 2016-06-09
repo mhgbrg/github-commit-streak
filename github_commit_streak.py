@@ -2,26 +2,29 @@ import requests
 import datetime
 
 
+def json_request(url, headers):
+    response = requests.get(url, headers=headers)
+
+    if response.status_code != 200:
+        raise ConnectionError(response.json())
+
+    return response.json()
+
+
 def calculate(api_key, email):
-    request_header = {'Authorization': 'token {0}'.format(api_key)}
-    repos = requests.get('https://api.github.com/user/repos', headers=request_header)
-    if repos.status_code != 200:
-        print('Repos request failed with status code {0}: {1}'.format(repos.status_code, repos.json()['message']))
-        return
+    auth_header = {'Authorization': 'token {0}'.format(api_key)}
+
+    repos = json_request('https://api.github.com/user/repos', auth_header)
 
     dates_with_commits = set()
 
-    for repo in repos.json():
+    for repo in repos:
+        print('Fetching commits for {0}...'.format(repo['name']))
+
         commits_url = repo['commits_url'].replace('{/sha}', '') + '?author=' + email
-        commits = requests.get(commits_url, headers=request_header)
+        commits = json_request(commits_url, auth_header)
 
-        print(repo['name'])
-
-        if commits.status_code != 200:
-            print('Commits request failed with status code {0}. {1}'.format(commits.status_code, repos.json()['message']))
-            return
-
-        for commit in commits.json():
+        for commit in commits:
             try:
                 if len(commit['parents']) <= 1:
                     date = commit['commit']['author']['date'][:10]
