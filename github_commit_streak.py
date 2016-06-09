@@ -12,7 +12,7 @@ def calculate(API_KEY):
         print('Repos request failed with status code {0}: {1}'.format(repos.status_code, repos.json()['message']))
         return
 
-    dates_with_commits = dict()
+    dates_with_commits = set()
 
     for repo in repos.json():
         commits_url = repo['commits_url'].replace('{/sha}', '') + '?author=' + EMAIL
@@ -28,7 +28,7 @@ def calculate(API_KEY):
             try:
                 if len(commit['parents']) <= 1:
                     date = commit['commit']['author']['date'][:10]
-                    dates_with_commits[date] = 1
+                    dates_with_commits.add(date)
             except TypeError as e:
                 print(e)
                 print(commit)
