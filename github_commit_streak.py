@@ -2,12 +2,9 @@ import requests
 import datetime
 
 
-EMAIL = 'mats@hgbrg.se'
-
-
-def calculate(API_KEY):
-    REQUEST_HEADER = {'Authorization': 'token {0}'.format(API_KEY)}
-    repos = requests.get('https://api.github.com/user/repos', headers=REQUEST_HEADER)
+def calculate(api_key, email):
+    request_header = {'Authorization': 'token {0}'.format(api_key)}
+    repos = requests.get('https://api.github.com/user/repos', headers=request_header)
     if repos.status_code != 200:
         print('Repos request failed with status code {0}: {1}'.format(repos.status_code, repos.json()['message']))
         return
@@ -15,8 +12,8 @@ def calculate(API_KEY):
     dates_with_commits = set()
 
     for repo in repos.json():
-        commits_url = repo['commits_url'].replace('{/sha}', '') + '?author=' + EMAIL
-        commits = requests.get(commits_url, headers=REQUEST_HEADER)
+        commits_url = repo['commits_url'].replace('{/sha}', '') + '?author=' + email
+        commits = requests.get(commits_url, headers=request_header)
 
         print(repo['name'])
 
