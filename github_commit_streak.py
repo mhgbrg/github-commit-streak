@@ -35,11 +35,8 @@ def calculate(api_key, email):
 
     count = 0
     date = datetime.date.today()
-    while True:
-        if date.strftime('%Y-%m-%d') in dates_with_commits:
-            count = count + 1
-            date = date - datetime.timedelta(days=1)
-        else:
-            break
+    while date.strftime('%Y-%m-%d') in dates_with_commits:
+        count = count + 1
+        date = date - datetime.timedelta(days=1)
 
     return count
