@@ -30,8 +30,7 @@ def calculate(api_key, email):
                     date = commit['commit']['author']['date'][:10]
                     dates_with_commits.add(date)
             except TypeError as e:
-                print(e)
-                print(commit)
+                # Something missing from commit, disregard it.
                 pass
 
     count = 0
