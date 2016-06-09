@@ -5,7 +5,7 @@ import datetime
 EMAIL = 'mats@hgbrg.se'
 
 
-def commit_streak(API_KEY):
+def calculate(API_KEY):
     REQUEST_HEADER = {'Authorization': 'token {0}'.format(API_KEY)}
     repos = requests.get('https://api.github.com/user/repos', headers=REQUEST_HEADER)
     if repos.status_code != 200:
@@ -34,8 +34,6 @@ def commit_streak(API_KEY):
                 print(commit)
                 pass
 
-    print(len(dates_with_commits.keys()))
-
     count = 0
     date = datetime.date.today()
     while True:
@@ -45,4 +43,4 @@ def commit_streak(API_KEY):
         else:
             break
 
-    print(count)
+    return count
